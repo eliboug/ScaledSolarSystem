@@ -5,35 +5,33 @@ public class SolarSystemScale {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Planet data based on CSV (relative diameter and mean distance in AU)
-        double[] planetDiameters = {0.382, 0.949, 1.0, 0.532, 11.21, 9.45, 4.01, 3.88}; // Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune
-        double[] distancesFromSun = {0.39, 0.72, 1.0, 1.52, 5.2, 9.58, 19.22, 30.05}; // in AU
+        // Data
+        double[] planetDiameters = {4878, 12104, 12756, 6787, 142984, 120536, 51118, 49528, 2370}; // in kilometers
+        double[] orbitalRadiiAU = {0.39, 0.72, 1.00, 1.52, 5.20, 9.58, 19.22, 30.05, 39.48}; // in AU
+        String[] planetNames = {"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"}; // indices line up 
 
-        // Asking for the diameter which represents the Sun in cm
-        System.out.println("Enter the diameter of our scaled Sun (in cm):");
-        double sunDiameterInCm = scanner.nextDouble();
+        System.out.print("Enter the scaled diameter of the Sun in centimeters: ");
+        double scaledSunDiameterCM = scanner.nextDouble();
 
-        // Sun diameter in terms of Earth diameters 
-        double earthDiameterRelativeToSun = 1 / 109.0;
+        // Convert the scaled Sun diameter from centimeters to kilometers for scaling
+        double scaledSunDiameterKM = scaledSunDiameterCM / 100000; // 100,000 cm in a km
 
-        // Scaling factor for diameters and distances
-        double scaleForDiameters = earthDiameterRelativeToSun * sunDiameterInCm;
-        double earthOrbitalRadiusInCm = 149.6e6 * scaleForDiameters; // Scaling AU (149.6 million km per AU)
+        // Constants for calculation
+        double SUN_DIAMETER_KM = 1392000; // original diameter of the sun in kilometers
+        double AU_IN_KM = 149597870.7; // 1 AU in kilometers
 
-        System.out.println("Scaled planetary sizes and orbital radii:");
+        // Calculate the scale factor
+        double scaleFactor = scaledSunDiameterKM / SUN_DIAMETER_KM;
 
-        for (int i = 0; i < planetDiameters.length; i++) {
-            double planetDiameterInCm = planetDiameters[i] * scaleForDiameters;
-            double orbitalRadiusInM = distancesFromSun[i] * earthOrbitalRadiusInCm/100;
-            System.out.printf("%s: Diameter = %.2f cm, Orbital Radius = %.2f m%n",
-            getPlanetName(i), planetDiameterInCm, orbitalRadiusInM);
+        // Output scaled dimensions
+        System.out.println("\nScaled Solar System Dimensions:");
+        System.out.println("Sun Diameter: " + scaledSunDiameterCM + " cm");
+
+        for (int i = 0; i < planetNames.length; i++) {
+            double scaledDiameter = planetDiameters[i] * scaleFactor * 1000000; // Convert to millimeters
+            double scaledOrbitalRadius = orbitalRadiiAU[i] * scaleFactor * AU_IN_KM * 1000; // Convert AU to meters
+
+            System.out.printf("%s: Diameter = %.5f mm, Orbital Radius = %.2f m\n", planetNames[i], scaledDiameter, scaledOrbitalRadius);
         }
-
-        scanner.close(); // did not know you have to do this
-    }
-    // helper method to clean up the code 
-    private static String getPlanetName(int index) {
-        String[] planetNames = {"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
-        return planetNames[index];
     }
 }
